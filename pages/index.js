@@ -1,27 +1,7 @@
 import { Fragment } from "react";
 import Head from "next/head";
 import BlogItem from "../components/blogItem/BlogItem";
-
-const BLOG_POSTS = [
-  {
-    id: 1,
-    slug: "first-blog",
-    title: "First Blog",
-    image:
-      "https://images.unsplash.com/photo-1650054097876-2dc03516eb64?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-    description: "first blog post lalala",
-    details: "blog details go here",
-  },
-  {
-    id: 2,
-    slug: "second-blog",
-    title: "Second Blog",
-    image:
-      "https://images.unsplash.com/photo-1650054097876-2dc03516eb64?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-    description: "second blog post lalala",
-    details: "2nd blog blog details go here",
-  },
-];
+import { MongoClient } from "mongodb";
 
 function HomePage(props) {
   return (
@@ -54,9 +34,25 @@ export async function getStaticProps(context) {
   // Read the file system
   // Securely connect to database with creditials
 
+  const client = await MongoClient.connect(
+    "mongodb+srv://admin:test@cluster0.6ht51.mongodb.net/next-practice?retryWrites=true&w=majority"
+  );
+
+  const blogPostsCollection = client.db().collection("posts");
+
+  const blogPosts = await blogPostsCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
-      blogPosts: BLOG_POSTS,
+      blogPosts: blogPosts.map((blog) => ({
+        title: blog.title,
+        description: blog.description,
+        image: blog.image,
+        id: blog._id.toString(),
+        slug: blog.slug,
+      })),
     },
     revalidate: 3600, // Every hour, measured in seconds
   };

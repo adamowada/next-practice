@@ -1,8 +1,11 @@
 import { Fragment } from "react";
 import BlogForm from "../../components/blogForm/BlogForm";
 import fetch from "node-fetch";
+import { useRouter } from "next/router";
 
 function AddBlog() {
+  const router = useRouter();
+
   // send request to our backend api to save our blog to the backend
   const addBlogHandler = async (data) => {
     const response = await fetch("/api/new-blog", {
@@ -14,7 +17,8 @@ function AddBlog() {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
+
+    router.push("/");
   };
 
   return (
