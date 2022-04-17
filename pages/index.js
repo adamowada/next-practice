@@ -23,7 +23,7 @@ const BLOG_POSTS = [
   },
 ];
 
-function HomePage() {
+function HomePage(props) {
   return (
     <Fragment>
       <Head>
@@ -34,7 +34,7 @@ function HomePage() {
       </Head>
 
       <h1>Blog Page</h1>
-      {BLOG_POSTS.map((blog) => (
+      {props.blogPosts.map((blog) => (
         <div key={blog.id} className="flex flex-col">
           <BlogItem
             title={blog.title}
@@ -49,4 +49,34 @@ function HomePage() {
   );
 }
 
+export async function getStaticProps(context) {
+  // Send request to a backend api
+  // Read the file system
+  // Securely connect to database with creditials
+
+  return {
+    props: {
+      blogPosts: BLOG_POSTS,
+    },
+    revalidate: 3600, // Every hour, measured in seconds
+  };
+}
+
 export default HomePage;
+
+// export async function getServerSideProps(context) {
+//   const { req, res } = context;
+//   // Gives you access to the incoming request, headers etc
+
+//   // context is an object that has the following keys it has params, these params are usually from these page's dynamic routes, access to the request and response objects, we can destructure the request and the response from the context. has the query string and lots more. can review data, resolve url, from the context
+
+//   // Send request to a backend api
+//   // Read the file system
+//   // Securely connect to database with creditials
+
+//   return {
+//     props: {
+//       blogPosts: BLOG_POSTS,
+//     },
+//   };
+// }
