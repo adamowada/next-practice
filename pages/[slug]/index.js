@@ -1,10 +1,26 @@
-import { useRouter } from "next/router";
+import { Fragment } from "react";
 import { MongoClient } from "mongodb";
 
-function BlogDetails() {
-  const router = useRouter();
+import BlogItem from "../../components/blogItem/BlogItem";
 
-  return <h1>The Blog Details Page</h1>;
+function BlogDetails(props) {
+  const {
+    blog: { title, description, image, details },
+  } = props;
+
+  return (
+    <Fragment>
+      <h1>The Blog Details Page</h1>
+      <div className="flex flex-col">
+        <BlogItem
+          title={title}
+          description={description}
+          image={image}
+          details={details}
+        />
+      </div>
+    </Fragment>
+  );
 }
 
 export async function getStaticPaths() {
@@ -36,9 +52,20 @@ export async function getStaticProps(context) {
 
   const blogPostsCollection = client.db().collection("posts");
 
-  const blogPosts = await blogPostsCollection.find({}, { slug: 1 }).toArray(); //only return the SLUG
-}
+  const blogPost = await blogPostsCollection.findOne({ slug: blogID });
 
-export async function getStaticProps() {}
+  client.close();
+
+  return {
+    props: {
+      blog: {
+        title: blogPost.title,
+        description: blogPost.description,
+        details: blogPost.details,
+        image: blogPost.image,
+      },
+    },
+  };
+}
 
 export default BlogDetails;

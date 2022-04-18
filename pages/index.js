@@ -11,6 +11,8 @@ function HomePage(props) {
           href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
           rel="stylesheet"
         />
+        <title>Next.js Crash Course - Blog</title>
+        <meta name="description" content="This is a next.js crash course" />
       </Head>
 
       <h1>Blog Page</h1>
